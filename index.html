@@ -58,7 +58,7 @@ const T = {
 };
 
 const ROLES = [
-  { id: "supplier", name: "下包廠商", nameEn: "Supplier", color: T.accent, desc: "融資方 — 用應收帳款發行 RWA 代幣" },
+  { id: "supplier", name: "製造商", nameEn: "Supplier", color: T.accent, desc: "融資方 — 用應收帳款發行 RWA 代幣" },
   { id: "trader", name: "接單貿易商", nameEn: "Trader", color: T.gold, desc: "次優先投資方 + 貿易商" },
   { id: "investor", name: "外部投資人", nameEn: "Investor", color: T.green, desc: "優先投資方 — 購買優先層級 RWA 代幣" },
   { id: "platform", name: "平台", nameEn: "Platform", color: T.purple, desc: "設計法律和技術架構，管理智能合約" },
@@ -196,28 +196,58 @@ function Navigation({ activePage, setActivePage }) {
 }
 
 function HomePage({ setActivePage }) {
+  const heroImages = [
+    "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1600&q=80",
+    "https://images.unsplash.com/photo-1494412574643-ff11b0a5eb19?w=1600&q=80",
+    "https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1600&q=80",
+    "https://images.unsplash.com/photo-1553413077-190dd305871c?w=1600&q=80",
+  ];
+  const [heroIdx, setHeroIdx] = useState(0);
+  useEffect(() => {
+    const timer = setInterval(() => setHeroIdx(prev => (prev + 1) % heroImages.length), 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div style={{ backgroundColor: T.bg }}>
-      <section style={{ paddingTop: "128px", paddingBottom: "80px", paddingLeft: "24px", paddingRight: "24px" }}>
-        <div style={{ maxWidth: "896px", margin: "0 auto", textAlign: "center" }}>
+      <section style={{ position: "relative", overflow: "hidden", minHeight: "92vh", display: "flex", alignItems: "center", justifyContent: "center", paddingTop: "80px", paddingBottom: "80px", paddingLeft: "24px", paddingRight: "24px" }}>
+        {heroImages.map((src, i) => (
+          <div key={i} style={{
+            position: "absolute", inset: 0,
+            backgroundImage: `url(${src})`,
+            backgroundSize: "cover", backgroundPosition: "center",
+            opacity: heroIdx === i ? 1 : 0,
+            transition: "opacity 1.5s ease-in-out",
+            zIndex: 0,
+          }} />
+        ))}
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(251,251,253,0.88) 0%, rgba(251,251,253,0.72) 40%, rgba(251,251,253,0.85) 100%)", zIndex: 1 }} />
+        <div style={{ position: "relative", zIndex: 2, maxWidth: "896px", margin: "0 auto", textAlign: "center" }}>
           <FadeInSection>
             <p style={{ fontSize: "14px", fontWeight: 500, letterSpacing: "0.05em", marginBottom: "20px", color: T.accent }}>台灣出口供應鏈融資</p>
             <h1 style={{ fontSize: "clamp(48px, 6vw, 72px)", fontWeight: 700, lineHeight: 1.1, letterSpacing: "-0.02em", marginBottom: "24px", color: T.text1 }}>
               應收帳款融資，<br />
               <span style={{ background: "linear-gradient(135deg, #0071E3, #5AC8FA)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>重新定義。</span>
             </h1>
-            <p style={{ fontSize: "clamp(18px, 2.5vw, 24px)", lineHeight: 1.6, maxWidth: "640px", margin: "0 auto 40px", color: T.text3 }}>
+            <p style={{ fontSize: "clamp(18px, 2.5vw, 24px)", lineHeight: 1.6, maxWidth: "640px", margin: "0 auto 40px", color: T.text2 }}>
               透過 RWA 代幣化與風險分層設計，讓中小型出口製造商不再受限於 90 天帳期。
             </p>
           </FadeInSection>
           <FadeInSection delay={0.15}>
             <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "12px" }}>
-              <button onClick={() => setActivePage("flow")} style={{ padding: "12px 28px", borderRadius: "9999px", fontWeight: 500, fontSize: "16px", border: "none", cursor: "pointer", backgroundColor: T.accent, color: T.white, transition: "transform 0.2s" }}
+              <button onClick={() => setActivePage("flow")} style={{ padding: "12px 28px", borderRadius: "9999px", fontWeight: 500, fontSize: "16px", border: "none", cursor: "pointer", backgroundColor: T.accent, color: T.white, transition: "transform 0.2s", boxShadow: "0 4px 20px rgba(0,113,227,0.3)" }}
                 onMouseOver={e => e.target.style.transform = "scale(1.05)"} onMouseOut={e => e.target.style.transform = "scale(1)"}>探索運作方式</button>
-              <button onClick={() => setActivePage("dashboard")} style={{ padding: "12px 28px", borderRadius: "9999px", fontWeight: 500, fontSize: "16px", border: "none", cursor: "pointer", backgroundColor: T.bgAlt, color: T.text1, transition: "transform 0.2s" }}
+              <button onClick={() => setActivePage("dashboard")} style={{ padding: "12px 28px", borderRadius: "9999px", fontWeight: 500, fontSize: "16px", border: "none", cursor: "pointer", backgroundColor: "rgba(255,255,255,0.85)", color: T.text1, transition: "transform 0.2s", backdropFilter: "blur(10px)", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}
                 onMouseOver={e => e.target.style.transform = "scale(1.05)"} onMouseOut={e => e.target.style.transform = "scale(1)"}>查看儀表板</button>
             </div>
           </FadeInSection>
+          <div style={{ display: "flex", justifyContent: "center", gap: "8px", marginTop: "32px" }}>
+            {heroImages.map((_, i) => (
+              <button key={i} onClick={() => setHeroIdx(i)}
+                style={{ width: heroIdx === i ? "24px" : "8px", height: "8px", borderRadius: "9999px", border: "none", cursor: "pointer", transition: "all 0.4s",
+                  backgroundColor: heroIdx === i ? T.accent : "rgba(0,0,0,0.15)" }} />
+            ))}
+          </div>
         </div>
       </section>
 
@@ -225,7 +255,7 @@ function HomePage({ setActivePage }) {
         <div style={{ maxWidth: "1024px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "32px" }}>
           {[
             { value: 8, suffix: "%", label: "優先層級年化報酬", sub: "25% 緩衝保護" },
-            { value: 88, suffix: "%", label: "下包廠商毛利增幅", sub: "提前取得現金" },
+            { value: 88, suffix: "%", label: "製造商毛利增幅", sub: "提前取得現金" },
             { value: 7, suffix: " 層", label: "風險防護機制", sub: "獨立查核與智能合約" },
             { value: 90, suffix: " 天", label: "帳期代幣化", sub: "零息債券折價模型" },
           ].map((item, i) => (
@@ -257,7 +287,7 @@ function HomePage({ setActivePage }) {
           </FadeInSection>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px" }}>
             {[
-              { title: "下包廠商", desc: "出貨給接單貿易商，金額 500 萬", sub: "成本 400 萬，毛利 100 萬（20%）", icon: "1" },
+              { title: "製造商", desc: "出貨給接單貿易商，金額 500 萬", sub: "成本 400 萬，毛利 100 萬（20%）", icon: "1" },
               { title: "接單貿易商", desc: "轉賣給海外客戶，金額 525 萬", sub: "成本 500 萬，毛利 25 萬（4.76%）", icon: "2" },
               { title: "現金流缺口", desc: "出貨後等 90 天才收到款項", sub: "新訂單因資金不足無法承接", icon: "3" },
             ].map((item, i) => (
@@ -330,7 +360,7 @@ function HomePage({ setActivePage }) {
                   {[
                     { order: 1, who: "外部投資人", desc: "按面額優先贖回", color: T.green, bg: T.greenBg },
                     { order: 2, who: "接單貿易商", desc: "按面額次優先贖回", color: T.gold, bg: T.goldBg },
-                    { order: 3, who: "下包廠商", desc: "剩餘款項歸還", color: T.accent, bg: T.accentBg },
+                    { order: 3, who: "製造商", desc: "剩餘款項歸還", color: T.accent, bg: T.accentBg },
                   ].map((item) => (
                     <div key={item.order} style={{ display: "flex", alignItems: "center", gap: "16px" }}>
                       <div style={{ width: "44px", height: "44px", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px", fontWeight: 700, flexShrink: 0, backgroundColor: item.bg, color: item.color }}>{item.order}</div>
@@ -355,7 +385,7 @@ function HomePage({ setActivePage }) {
           </FadeInSection>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "20px" }}>
             {[
-              { label: "下包廠商毛利增幅", value: 88, suffix: "%", sub: "400萬 → 753萬", color: T.accent, bg: T.accentBg },
+              { label: "製造商毛利增幅", value: 88, suffix: "%", sub: "400萬 → 753萬", color: T.accent, bg: T.accentBg },
               { label: "接單貿易商收益增幅", value: 111, suffix: "%", sub: "500萬 → 1,057萬", color: T.goldText, bg: T.goldBg },
               { label: "優先層級年化報酬", value: 8, suffix: "%", sub: "25% 次優先緩衝保護", color: T.greenText, bg: T.greenBg },
               { label: "平台費年化", value: "1.2", suffix: "%", sub: "風控由會計師把關", color: T.purple, bg: T.purpleBg },
@@ -434,7 +464,7 @@ function HomePage({ setActivePage }) {
                 </div>
               ))}
               <div style={{ display: "flex", alignItems: "center", padding: "20px 32px", backgroundColor: T.bgAlt }}>
-                <span style={{ fontSize: "14px", fontWeight: 700, flex: 1, color: T.text1 }}>下包廠商總融資成本</span>
+                <span style={{ fontSize: "14px", fontWeight: 700, flex: 1, color: T.text1 }}>製造商總融資成本</span>
                 <div>
                   <span style={{ fontSize: "14px", fontWeight: 700, color: T.accent }}>約 11.9%</span>
                   <span style={{ fontSize: "12px", marginLeft: "12px", color: T.text4 }}>年化</span>
@@ -475,21 +505,21 @@ function FlowPage() {
   const [phase, setPhase] = useState("issue");
   const [step, setStep] = useState(0);
   const issueSteps = [
-    { title: "下包廠商出貨", desc: "下包廠商出貨給接單貿易商，產生 500 萬應收帳款", amount: "NT$ 500 萬" },
+    { title: "製造商出貨", desc: "製造商出貨給接單貿易商，產生 500 萬應收帳款", amount: "NT$ 500 萬" },
     { title: "接單貿易商轉售", desc: "接單貿易商出貨給海外客戶，產生 525 萬應收帳款", amount: "NT$ 525 萬" },
     { title: "會計師獨立查核", desc: "查核接單貿易商信用、終端客戶信用、應收帳款真實性", amount: "查核通過" },
     { title: "外部投資人投入優先資金", desc: "以折價投入優先層級資金（面額 300 萬）", amount: "NT$ 294.19 萬" },
     { title: "接單貿易商投入次優先資金", desc: "以折價投入次優先層級資金（面額 100 萬）", amount: "NT$ 97.13 萬" },
     { title: "智能合約發行 RWA 代幣", desc: "發行優先層級與次優先層級代幣", amount: "—" },
     { title: "扣除平台營運費用", desc: "平台費 1.18 萬 + 銷售佣金 0.89 萬 + 查核費 1.0 萬", amount: "-NT$ 3.07 萬" },
-    { title: "下包廠商實際收款", desc: "下包廠商提前取得融資款項", amount: "NT$ 388.25 萬" },
+    { title: "製造商實際收款", desc: "製造商提前取得融資款項", amount: "NT$ 388.25 萬" },
   ];
   const redeemSteps = [
     { title: "海外客戶付款", desc: "海外客戶支付貨款予接單貿易商", amount: "NT$ 525 萬" },
     { title: "接單貿易商注入智能合約", desc: "接單貿易商將應付款項注入智能合約", amount: "NT$ 500 萬" },
     { title: "優先層級按面額贖回", desc: "智能合約自動分配——外部投資人優先贖回", amount: "NT$ 300 萬" },
     { title: "次優先層級按面額贖回", desc: "智能合約自動分配——接單貿易商次順位贖回", amount: "NT$ 100 萬" },
-    { title: "剩餘款項歸還下包廠商", desc: "智能合約自動分配——剩餘歸還融資方", amount: "NT$ 100 萬" },
+    { title: "剩餘款項歸還製造商", desc: "智能合約自動分配——剩餘歸還融資方", amount: "NT$ 100 萬" },
     { title: "RWA 代幣註銷", desc: "交易完成結算，代幣自動銷毀", amount: "—" },
   ];
   const steps = phase === "issue" ? issueSteps : redeemSteps;
@@ -658,7 +688,7 @@ function DashboardPage() {
               <p style={{ fontSize: "12px", marginBottom: "20px", color: T.text4 }}>以 NT$ 400 萬融資為例</p>
               <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
                 {[
-                  { role: "下包廠商", profit: "88.25 萬", color: T.accent },
+                  { role: "製造商", profit: "88.25 萬", color: T.accent },
                   { role: "接單貿易商", profit: "27.87 萬", color: T.gold },
                   { role: "外部投資人", profit: "5.81 萬", color: T.green },
                   { role: "平台", profit: "1.18 萬", color: T.purple },
@@ -787,7 +817,7 @@ function RiskPage() {
                 {[
                   { label: "外部投資人（300萬）", value: RECOVERY_SCENARIOS[selectedScenario].investor, color: T.greenText, bg: T.greenBg },
                   { label: "接單貿易商次優先（100萬）", value: RECOVERY_SCENARIOS[selectedScenario].trader, color: T.goldText, bg: T.goldBg },
-                  { label: "下包廠商（100萬剩餘）", value: RECOVERY_SCENARIOS[selectedScenario].supplier, color: T.accent, bg: T.accentBg },
+                  { label: "製造商（100萬剩餘）", value: RECOVERY_SCENARIOS[selectedScenario].supplier, color: T.accent, bg: T.accentBg },
                 ].map((card, i) => (
                   <div key={i} style={{ padding: "20px", borderRadius: "12px", backgroundColor: card.bg }}>
                     <p style={{ fontSize: "12px", fontWeight: 500, marginBottom: "8px", color: card.color }}>{card.label}</p>
